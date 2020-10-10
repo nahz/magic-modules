@@ -19,7 +19,6 @@ overrides: !ruby/object:Overrides::ResourceOverrides
     examples:
       - !ruby/object:Provider::Terraform::Examples
         name: 'billing_budget_basic'
-        min_version: beta
         primary_resource_id: 'budget'
         vars:
           display_name: 'Example Billing Budget'
@@ -27,7 +26,6 @@ overrides: !ruby/object:Overrides::ResourceOverrides
           billing_acct: :BILLING_ACCT
       - !ruby/object:Provider::Terraform::Examples
         name: 'billing_budget_lastperiod'
-        min_version: beta
         primary_resource_id: 'budget'
         vars:
           display_name: 'Example Billing Budget'
@@ -36,7 +34,6 @@ overrides: !ruby/object:Overrides::ResourceOverrides
           project: :PROJECT_NAME
       - !ruby/object:Provider::Terraform::Examples
         name: 'billing_budget_filter'
-        min_version: beta
         primary_resource_id: 'budget'
         vars:
           display_name: 'Example Billing Budget'
@@ -45,6 +42,15 @@ overrides: !ruby/object:Overrides::ResourceOverrides
           project: :PROJECT_NAME
       - !ruby/object:Provider::Terraform::Examples
         name: 'billing_budget_notify'
+        primary_resource_id: 'budget'
+        vars:
+          budget_name: 'Example Billing Budget'
+          channel_name: 'Example Notification Channel'
+        test_env_vars:
+          billing_acct: :BILLING_ACCT
+          project: :PROJECT_NAME
+      - !ruby/object:Provider::Terraform::Examples
+        name: 'billing_budget_notify_beta'
         min_version: beta
         primary_resource_id: 'budget'
         vars:

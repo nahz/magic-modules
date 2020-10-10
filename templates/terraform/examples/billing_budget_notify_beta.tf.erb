@@ -1,8 +1,10 @@
 data "google_billing_account" "account" {
+  provider        = google-beta
   billing_account = "<%= ctx[:test_env_vars]['billing_acct'] -%>"
 }
 
 resource "google_billing_budget" "<%= ctx[:primary_resource_id] %>" {
+  provider        = google-beta
   billing_account = data.google_billing_account.account.id
   display_name    = "<%= ctx[:vars]['budget_name'] %>"
 
@@ -25,7 +27,7 @@ resource "google_billing_budget" "<%= ctx[:primary_resource_id] %>" {
     spend_basis       = "FORECASTED_SPEND"
   }
   
-  notifications_rule {
+  all_updates_rule {
     monitoring_notification_channels = [
       google_monitoring_notification_channel.notification_channel.id,
     ]
@@ -34,6 +36,7 @@ resource "google_billing_budget" "<%= ctx[:primary_resource_id] %>" {
 }
 
 resource "google_monitoring_notification_channel" "notification_channel" {
+  provider     = google-beta
   display_name = "<%= ctx[:vars]['channel_name'] %>"
   type         = "email"
   
