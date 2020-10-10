@@ -16,6 +16,9 @@ name: Billing
 display_name: Billing Budget
 versions:
   - !ruby/object:Api::Product::Version
+    name: ga
+    base_url: https://billingbudgets.googleapis.com/v1/
+  - !ruby/object:Api::Product::Version
     name: beta
     base_url: https://billingbudgets.googleapis.com/v1beta1/
 scopes:
@@ -39,7 +42,7 @@ objects:
       guides:
         'Creating a budget':
           'https://cloud.google.com/billing/docs/how-to/budgets'
-      api: 'https://cloud.google.com/billing/docs/reference/budget/rest/v1beta1/billingAccounts.budgets'
+      api: 'https://cloud.google.com/billing/docs/reference/budget/rest/v1/billingAccounts.budgets'
     parameters:
       - !ruby/object:Api::Type::String
         name: billingAccount
@@ -175,8 +178,55 @@ objects:
                   values:
                     - :CURRENT_SPEND
                     - :FORECASTED_SPEND
+          # The notificationsRule object was named allUpdatesRule in v1beta1
+          - !ruby/object:Api::Type::NestedObject
+            name: notificationsRule
+            exact_version: ga
+            description: |
+              Defines notifications that are sent on every update to the
+              billing account's spend, regardless of the thresholds defined
+              using threshold rules.
+            properties:
+              - !ruby/object:Api::Type::String
+                name: pubsubTopic
+                at_least_one_of:
+                  - budget.0.notifications_rule.0.pubsub_topic
+                  - budget.0.notifications_rule.0.monitoring_notification_channels
+                description: |
+                  The name of the Cloud Pub/Sub topic where budget related
+                  messages will be published, in the form
+                  projects/{project_id}/topics/{topic_id}. Updates are sent
+                  at regular intervals to the topic.
+              - !ruby/object:Api::Type::String
+                name: schemaVersion
+                default_value: "1.0"
+                description: |
+                  The schema version of the notification. Only "1.0" is
+                  accepted. It represents the JSON schema as defined in
+                  https://cloud.google.com/billing/docs/how-to/budgets#notification_format.
+              - !ruby/object:Api::Type::Array
+                name: monitoringNotificationChannels
+                at_least_one_of:
+                  - budget.0.notifications_rule.0.pubsub_topic
+                  - budget.0.notifications_rule.0.monitoring_notification_channels
+                description: |
+                  The full resource name of a monitoring notification
+                  channel in the form
+                  projects/{project_id}/notificationChannels/{channel_id}.
+                  A maximum of 5 channels are allowed.
+                item_type: Api::Type::String
+              - !ruby/object:Api::Type::Boolean
+                name: disableDefaultIamRecipients
+                default_value: false
+                description: |
+                  Boolean. When set to true, disables default notifications sent
+                  when a threshold is exceeded. Default recipients are
+                  those with Billing Account Administrators and Billing
+                  Account Users IAM roles for the target account.
+          # The allUpdatesRule object was renamed in v1 to notificationsRule
           - !ruby/object:Api::Type::NestedObject
             name: allUpdatesRule
+            exact_version: beta
             description: |
               Defines notifications that are sent on every update to the
               billing account's spend, regardless of the thresholds defined
